@@ -1,42 +1,60 @@
 
 
+peripheralList = peripheral.getNames()
 
-function manualControl()
+function manualWireless()
     while true do
-        local event, character = os.pullEvent("char")
-        if character == "w" then
+        local sender, message, protocol = rednet.receive() 
+        if message == "w" then
             turtle.forward()
-            print(character .. ": Moving forward...")
-        elseif character == "s" then
+            print(message .. ": Moving forward...")
+        elseif message == "s" then
             turtle.back()
-            print(character .. ": Moving backward...")
-        elseif character == "a" then
+            print(message .. ": Moving backward...")
+        elseif message == "a" then
             turtle.turnLeft()
-            print(character .. ": Turning left...")
-        elseif character == "d" then
+            print(message .. ": Turning left...")
+        elseif message == "d" then
             turtle.turnRight()
-            print(character .. ": Turning right...")
-        elseif character == "e" then
+            print(message .. ": Turning right...")
+        elseif message == "z" then
             turtle.down()
-            print(key .. ": Going down...")
-        elseif key == "q" then
+            print(message .. ": Going down...")
+        elseif message == "q" then
             turtle.up()
-            print(key .. ": Going down...")
+            print(message .. ": Going up...")
+        elseif message == "e" then
+            textutils.slowPrint("Terminating manual mode. Standby...")
+            rednet.close(peripheralList[i])
+            os.sleep(2)
+            return
         else
-            print("Key not recognized. Use W/A/S/D/Q/E for movmement...")
+            print("Key not recognized. Use W/A/S/D/Q/Z for movmement and E to exit...")
         end
     end
 end
 
-function findModem()
-    if peripheral.find("modem").open(1) then
-        manualControl()
-    else
-        print("Please connect a modem to this device")
+if next(peripheralList) then
+    for i = 1, #peripheralList do
+        print("There is a "..peripheral.getType(peripheralList[i]).." connected to the \""..peripheralList[i].."\"")
+        if peripheral.getType(peripheralList[i]) == "modem" then
+            textutils.slowPrint("Activating modem. Standby...")
+            os.sleep(2)
+            rednet.open(peripheralList[i])
+            textutils.slowPrint("Modem powered up, loading boot sequence for manual control. Standby...")
+            os.sleep(2)
+            manualWireless()
+        else
+            textutils.slowPrint("No modem found. Terminating bootup...")
+            os.sleep(2)
+            return
+        end
     end
+else
+    textutils.slowPrint("Could not find any peripherals. Terminating bootup...")
+    return
 end
 
-findModem()
 
 
 
