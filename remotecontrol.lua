@@ -6,28 +6,66 @@ function manualWireless()
     while true do
         local sender, message, protocol = rednet.receive() 
         if message == "w" then
-            turtle.forward()
-            print(message .. ": Moving forward...")
+            local sense = turtle.detect()
+            if sense == false then
+                turtle.forward()
+            else
+                print("A block was detected, mining...")
+                turtle.dig()
+                os.sleep(0.05)
+                turtle.forward()
+            end
+            print(message .. ": Moving forward")
+
+
         elseif message == "s" then
             turtle.back()
-            print(message .. ": Moving backward...")
+            print(message .. ": Moving backward")
+
+
         elseif message == "a" then
             turtle.turnLeft()
-            print(message .. ": Turning left...")
+            print(message .. ": Turning left")
+
+
         elseif message == "d" then
             turtle.turnRight()
-            print(message .. ": Turning right...")
+            print(message .. ": Turning right")
+
+
         elseif message == "z" then
-            turtle.down()
+            local sense = turtle.detectDown()
+            if sense == false then
+                turtle.down()
+            else
+                print("A block was detected, mining...")
+                turtle.digDown()
+                os.sleep(0.05)
+                turtle.down()
+            end
             print(message .. ": Going down...")
+
+
         elseif message == "q" then
-            turtle.up()
+            local sense = turtle.detectUp()
+            if sense == false then 
+                turtle.up()
+            else
+                print("A block was detected, mining...")
+                turtle.digUp()
+                os.sleep(0.05)
+                turtle.up()
+            end
             print(message .. ": Going up...")
+
+
         elseif message == "e" then
             textutils.slowPrint("Terminating manual mode. Standby...")
             rednet.close(peripheralList[i])
             os.sleep(2)
             return
+        
+        
         else
             print("Key not recognized. Use W/A/S/D/Q/Z for movmement and E to exit...")
         end
