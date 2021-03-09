@@ -1,6 +1,4 @@
-
-
-peripheralList = peripheral.getNames()  -- This section of code sets a variable to the table peripheral.getNames()
+ -- This section of code sets a variable to the table peripheral.getNames()
 
 function manualWireless()                                       -- Create a function to house the remote control aspect
     
@@ -74,41 +72,5 @@ function manualWireless()                                       -- Create a func
     end
 end
 
---[[ The code below checks if there are any peripherals attached to the device, whether it be turtle or computer so the program
-     is portable to multiple systems. The 'next' argument allows us to traverse a table by jumping between arguments within a table.
-     We use this to test if the table, 'peripheralList' has any values in it. Or in this case, if there's anything attached to the
-     device we're using.
---]]
-
-
-if next(peripheralList) then  
-    for i = 1, #peripheralList do
-        print("There is a "..peripheral.getType(peripheralList[i]).." connected to the \""..peripheralList[i].."\"")
-        if peripheral.getType(peripheralList[i]) == "modem" then
-            textutils.slowPrint("Activating modem. Standby...")
-            os.sleep(2)
-            rednet.open(peripheralList[i])
-            textutils.slowPrint("Modem powered up, loading boot sequence for manual control. Standby...")
-            os.sleep(2)
-            manualWireless()
-        else
-            textutils.slowPrint("No modem found. Terminating bootup...")
-            os.sleep(2)
-            return
-        end
-    end
-else
-    textutils.slowPrint("Could not find any peripherals. Terminating bootup...")
-    return
-end
-
---[[ 
-    With the above comment describing the table we defined above the 'manualWireless' function,
-     the program checks if there are any modems attached to the device. If so, it opens that modem
-     with 'rednet.open' and we use the 'i' iterator for our table so it will be opened regardless of 
-     what side it is connect, again for portability. There are some 'slowPrint' commands for flair.
-     If there isn't a modem attached to the device, it will still list all available peripherals and 
-     then close the program, so still some functionality.
---]]
-
+manualWireless()
 
